@@ -23,7 +23,13 @@ function calculate(){
 function infixToPostfix (infix) {
 	//TODO: add () validation
 	//TODO: add other(?) validation
-    var errMsg = "";
+    var errMsgB = "";
+    var errMsgE = "";
+    var okMsgB = "";
+    var okMsgE = "";
+    var resMsgB = "";
+    var resMsgE = "";
+    var VerrMsg = "";
     var outputQueue = "";
     var operatorStack = [];
     var operators = {
