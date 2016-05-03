@@ -9,7 +9,7 @@ function ValidateAll()
 	}
 	else
 	{
-//		Data = formatString(Data); //unused
+		Data = formatString(Data); //unused
 		if(validateBrackets(Data) != true || validatePattern(Data) != true || validatePatternEnd(Data) != true || validateMinCon(Data) != true || validateEmptyBr(Data) != true)
 		{
 			setValidateMessage("validateError");
@@ -26,9 +26,9 @@ function ValidateAll()
 function formatString(Data)
 {
 
-	var tempData = Data.replace(":", "/");
-	tempData = tempData.replace("x", "*");
-	tempData = tempData.replace(/\s/g, "");
+	//var tempData = Data.replace(":", "/");
+	//tempData = tempData.replace("x", "*");
+	var tempData = Data.replace(/\s/g, "");
 	document.getElementById('expression_input').value = tempData;
 	return tempData;
 }
