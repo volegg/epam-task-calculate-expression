@@ -116,7 +116,12 @@ function infixToPostfix (infix) {
                 operatorStack.push(op1);
             }
         } else if(token === "(") {
+            if(i!==0 && "xх:+-".indexOf(infix[i-1]) === -1){
+                errorMessage += " no  valid operator between brackets";
+                errLevel++;
+            }
             operatorStack.push(token);
+            
         } else if(token === ")") {
             while(operatorStack[operatorStack.length - 1] !== "("&&operatorStack.length>0) {
                 outputQueue += operatorStack.pop() + " ";
