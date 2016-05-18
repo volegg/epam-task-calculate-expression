@@ -10,7 +10,7 @@ function ValidateAll()
 	else
 	{
 		Data = formatString(Data); //unused
-		if(validateBrackets(Data) != true || validatePattern(Data) != true || validatePatternEnd(Data) != true || validateMinCon(Data) != true || validateEmptyBr(Data) != true)
+		if(validateBrackets(Data) != true || validatePattern(Data) != true || validatePatternEnd(Data) != true || validateMinCon(Data) != true || validateEmptyBr(Data) != true || validateOperBrackets(Data) != true)
 		{
 			setValidateMessage("validateError");
 			return false;
@@ -62,6 +62,19 @@ function validateBrackets(Data)
 		return true;
 	}
 }
+
+function validateOperBrackets(Data)
+{
+	var operBracketPat = new RegExp(/\)\(/g);
+	if(Data.match(operBracketPat) != null)
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
 function validatePattern(Data)
 {
 	
@@ -82,7 +95,8 @@ function validatePatternEnd(Data)
 {
 	console.log("String before validatePatternEnd: "+ Data);
 	var validPattern = new RegExp(/([\+\-\x\:]{2,})/g);
-	var validPatternEnd = new RegExp(/^[\+\-\x\:]|[\+\-\x\:]$/g);
+	//var validPatternEnd = new RegExp(/^[\+\-\x\:]|[\+\-\x\:]$/g);
+	var validPatternEnd = new RegExp(/^[\+\-\x\:]\D+|[\+\-\x\:]$/g);
 	var tempData = Data;
 	tempData = Data.match(validPattern);
 	console.log("String after validatePatternEnd: "+ tempData);

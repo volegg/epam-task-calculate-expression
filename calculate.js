@@ -18,19 +18,28 @@ function expToArray(expr)
 	var exp_mas = expr.match(exp_pattern);
 	var mas = [];
 	var digit_flag;
+	var minus_flag;
 	for(var i=0; i < exp_mas.length; i++)
 	{
 		if(exp_mas[i].match(/\d/) != null)
 		{
-			if(digit_flag == true)
+			if(digit_flag == true || minus_flag == true)
 			{
 				mas[mas.length-1] = mas[mas.length-1].concat(exp_mas[i]);
+				minus_flag = false;
 			}
 			else
 			{
 				mas.push(exp_mas[i]);
+				minus_flag = false;
 			}
 			digit_flag = true;
+		}
+		else if ((exp_mas[i].match(/\(/) != null && exp_mas[i+1].match(/\-/) != null) || (exp_mas[i].match(/\-/) != null && i == 0))
+		{
+			minus_flag = true;
+			mas.push(exp_mas[i]);
+			digit_flag = false;
 		}
 		else
 		{
