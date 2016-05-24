@@ -121,7 +121,7 @@ function infixToPostfix(infix) {
         errorMessage += ' unexpected chars;';
         errLevel++;
     }
-    infix = infix.replace('(-', '(#');
+    infix = infix.replace(/\B\(-/g, '(#');
     if (infix[0] === '-') {
         infix = infix.replaceAt(0, '#');
     }
