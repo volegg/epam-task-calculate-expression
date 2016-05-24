@@ -108,7 +108,7 @@ function infixToPostfix(infix) {
     let vrbl = document.getElementById('vrbl').value;
     if (infix.indexOf('X') !== -1){
         if(vrbl !== '' && vrbl.isNumeric()){
-            infix = infix.replace('X', vrbl);
+            infix = infix.replace(/[\X]/g, vrbl);
         }
         else {
             errorMessage += ' empty or invalid variable value;';
@@ -117,7 +117,7 @@ function infixToPostfix(infix) {
     }
 
     infix = infix.replace(/\s+/g, '');
-    if (infix.replace(/([0-9\+\-\x\х\\:\(\)])/ig, '') !== '') {
+    if (infix.replace(/([0-9\+\-\x\х\\:\(\)])/g, '') !== '') {
         errorMessage += ' unexpected chars;';
         errLevel++;
     }
