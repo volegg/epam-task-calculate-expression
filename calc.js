@@ -10,6 +10,11 @@ Array.prototype.clean = function() {
     }
     return this;
 }
+
+String.prototype.replaceAt=function(index, character) {
+    return this.substr(0, index) + character + this.substr(index+character.length);
+}
+
 var errorMessage;
 var postfix;
 
@@ -80,6 +85,9 @@ function infixToPostfix (infix) {
         ":": {
             precedence: 3
         },
+        "#":{// change of a sign
+            precedence: 3
+        },
         "+": {
             precedence: 2
         },
@@ -92,31 +100,35 @@ function infixToPostfix (infix) {
         errorMessage += " unexpected chars;"; 
         errLevel++;
     }
-    infix = infix.split(/([\+\-\x\х\\:\(\)])/).clean();
+    infix = infix.replace('(-','(#');
+    if (infix[0]==='-'){
+        infix = infix.replaceAt(0,'#');
+    };
+    infix = infix.split(/([\+\-\x\х\\:\#\(\)])/).clean();
     for(var i = 0; i < infix.length; i++) {
         var token = infix[i];
         if(token.isNumeric()) {
             outputQueue += token + " ";
-        } else if("xх:+-".indexOf(token) !== -1) {
-            if("xх:+-".indexOf(infix[i-1]) !== -1){
+        } else if("xх:#+-".indexOf(token) !== -1) {
+            if("xх:#+-".indexOf(infix[i-1]) !== -1){
                 errorMessage += " two opeators successively;"; 
                 errLevel++;
             }
-            else if (i===0||i===infix.length-1) {
+            else if ((i===0||i===infix.length-1)&&(token!='#')) {
                 errorMessage += " leading or ending operator;"; 
                 errLevel++;   
             }
             else{
                 var op1 = token;
                 var op2 = operatorStack[operatorStack.length - 1];
-                while("xх:+-".indexOf(op2) !== -1 && ((operators[op1].precedence <= operators[op2].precedence))) {
+                while("xх:#+-".indexOf(op2) !== -1 && ((operators[op1].precedence <= operators[op2].precedence))) {
                     outputQueue += operatorStack.pop() + " ";
                     op2 = operatorStack[operatorStack.length - 1];
                 }
                 operatorStack.push(op1);
             }
         } else if(token === "(") {
-            if(i!==0 && "xх:+-".indexOf(infix[i-1]) === -1){
+            if(i!==0 && "xх:#+-".indexOf(infix[i-1]) === -1){
                 errorMessage += " no  valid operator between brackets";
                 errLevel++;
             }
@@ -160,7 +172,7 @@ function solvePostfix (postfix) {
                     resultStack.push(parseInt(a) + parseInt(b));
                 } else if(postfix[i] === "-") {
                     resultStack.push(parseInt(b) - parseInt(a));
-                } else if(postfix[i] === "*") {
+                } else if(postfix[i] === "х") {
                     resultStack.push(parseInt(a) * parseInt(b));
                 } else if(postfix[i] === "x") {
                     resultStack.push(parseInt(a) * parseInt(b));
@@ -168,7 +180,13 @@ function solvePostfix (postfix) {
                     resultStack.push(parseInt(b) / parseInt(a));
                 } else if(postfix[i] === ":") {
                     resultStack.push(parseInt(b) / parseInt(a));
+                } else if(postfix[i] === "#") {
+                    if (b) {
+                        resultStack.push(b)
+                    };
+                    resultStack.push(parseInt(a) * (-1));
                 }
+
             }
         }
         if(resultStack.length > 1) {
