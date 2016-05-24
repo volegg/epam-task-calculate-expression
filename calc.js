@@ -1,8 +1,10 @@
 String.prototype.isNumeric = function () {
+    'use strict';
     return !isNaN(parseFloat(this)) && isFinite(this);
 }
 
 Array.prototype.clean = function () {
+    'use strict';
     for (let i = 0; i < this.length; i++) {
         if (this[i] === '') {
             this.splice(i, 1);
@@ -12,7 +14,7 @@ Array.prototype.clean = function () {
 }
 
 String.prototype.replaceAt = function (index, character) {
-
+    'use strict';
     return this.substr(0, index) + character + this.substr(index + character.length);
 }
 
@@ -24,8 +26,10 @@ document.getElementById('calculate').addEventListener('click', calculate);
 let rd = document.getElementById('msg');
 
 function validate() {
+    'use strict';
     let str = document.getElementById('expr').value;
     let errLvl = 0;
+
     if (str.length > 0) {
         errorMessage = '';
         postfix = '';
@@ -45,12 +49,14 @@ function validate() {
 
 }
 function calculate() {
+    'use strict';
     if (validate() === 0) {
         setCalcRes(solvePostfix(postfix));
     }
 }
 
 function setCalcRes(str) {
+    'use strict';
     rd.style.width = '200px';
     rd.style.background = 'navy';
     rd.style.color = 'white';
@@ -58,6 +64,7 @@ function setCalcRes(str) {
 }
 
 function setValOk(str) {
+    'use strict';
     rd.style.width = '200px';
     rd.style.background = 'green';
     rd.style.color = 'white';
@@ -65,6 +72,7 @@ function setValOk(str) {
 }
 
 function setValErr(str) {
+    'use strict';
     rd.style.width = '200px';
     rd.style.background = 'red';
     rd.style.color = 'yellow';
@@ -72,6 +80,7 @@ function setValErr(str) {
 }
 
 function infixToPostfix(infix) {
+    'use strict';
     let outputQueue = '';
     let operatorStack = [];
     let errLevel = 0;
@@ -96,6 +105,17 @@ function infixToPostfix(infix) {
             precedence: 2
         }
     }
+    let vrbl = document.getElementById('vrbl').value;
+    if (infix.indexOf('X') !== -1){
+        if(vrbl !== '' && vrbl.isNumeric()){
+            infix = infix.replace('X', vrbl);
+        }
+        else {
+            errorMessage += ' empty or invalid variable value;';
+            errLevel++;
+        }
+    }
+
     infix = infix.replace(/\s+/g, '');
     if (infix.replace(/([0-9\+\-\x\х\\:\(\)])/ig, '') !== '') {
         errorMessage += ' unexpected chars;';
@@ -105,7 +125,6 @@ function infixToPostfix(infix) {
     if (infix[0] === '-') {
         infix = infix.replaceAt(0, '#');
     }
-    ;
     infix = infix.split(/([\+\-\x\х\\:\#\(\)])/).clean();
     for (let i = 0; i < infix.length; i++) {
         let token = infix[i];
@@ -116,7 +135,7 @@ function infixToPostfix(infix) {
                 errorMessage += ' two opeators successively;';
                 errLevel++;
             }
-            else if ((i === 0 || i === infix.length - 1) && (token != '#')) {
+            else if ((i === 0 || i === infix.length - 1) && (token !== '#')) {
                 errorMessage += ' leading or ending operator;';
                 errLevel++;
             }
@@ -158,10 +177,11 @@ function infixToPostfix(infix) {
         outputQueue += operatorStack.pop() + ' ';
     }
     postfix = outputQueue;
-    return errLevel;
+    return errLevel; 
 }
 
 function solvePostfix(postfix) {
+    'use strict';
     let resultStack = [];
     postfix = postfix.split(' ').clean();
     for (let i = 0; i < postfix.length; i++) {
@@ -183,13 +203,12 @@ function solvePostfix(postfix) {
             } else if (postfix[i] === ':') {
                 resultStack.push(parseInt(b) / parseInt(a));
             } else if (postfix[i] === '#') {
-                if (b) {
+                if (b !== undefined) {
                     resultStack.push(b)
                 }
-                ;
                 resultStack.push(parseInt(a) * (-1));
             }
-
+    
         }
     }
     if (resultStack.length > 1) {
