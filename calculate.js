@@ -2,9 +2,11 @@ document.getElementById('calculate_button').addEventListener('click', calculateE
 
 function calculateExp()
 {
-	if(ValidateAll() == true)
+	'use strict';
+	if(ValidateAll() === true)
 	{
 		var Data = document.getElementById('expression_input').value;
+		Data = formatString(Data);
 		var expr_array = expToArray(Data);
 		var formatted_array = formatExpr(expr_array);
 		var exp_result = executeExpr(formatted_array);
@@ -14,6 +16,7 @@ function calculateExp()
 }
 function expToArray(expr)
 {
+	'use strict';
 	var exp_pattern = new RegExp(/[\d+\+\-\:\x\(\)]/g);
 	var exp_mas = expr.match(exp_pattern);
 	var mas = [];
@@ -21,9 +24,9 @@ function expToArray(expr)
 	var minus_flag;
 	for(var i=0; i < exp_mas.length; i++)
 	{
-		if(exp_mas[i].match(/\d/) != null)
+		if(exp_mas[i].match(/\d/) !== null)
 		{
-			if(digit_flag == true || minus_flag == true)
+			if(digit_flag === true || minus_flag === true)
 			{
 				mas[mas.length-1] = mas[mas.length-1].concat(exp_mas[i]);
 				minus_flag = false;
@@ -35,7 +38,7 @@ function expToArray(expr)
 			}
 			digit_flag = true;
 		}
-		else if ((exp_mas[i].match(/\(/) != null && exp_mas[i+1].match(/\-/) != null) || (exp_mas[i].match(/\-/) != null && i == 0))
+		else if ((exp_mas[i].match(/\(/) !== null && exp_mas[i+1].match(/\-/) !== null) || (exp_mas[i].match(/\-/) !== null && i === 0))
 		{
 			minus_flag = true;
 			mas.push(exp_mas[i]);
@@ -53,22 +56,23 @@ function expToArray(expr)
 
 function formatExpr(expr_array)
 {
+	'use strict';
 	var output_array=[];
 	var stack =[];
 	for(var i=0; i < expr_array.length; i++)
 	{
-		if(expr_array[i].match(/\d/) != null)
+		if(expr_array[i].match(/\d/) !== null)
 		{
 			output_array.push(expr_array[i]);
-			non_digit_flag = false;
+
 		}
 		else
 		{
-			if(expr_array[i].match(/[\:\x\-\+\(]/) != null)
+			if(expr_array[i].match(/[\:\x\-\+\(]/) !== null)
 			{
 				if(stack.length > 0)
 				{
-					if((stack[stack.length-1].match(/[\:\x]/) != null && expr_array[i].match(/[\:\x]/) != null) || (stack[stack.length-1].match(/[\-\+]/) != null && expr_array[i].match(/[\-\+]/) != null) || (stack[stack.length-1].match(/[\:\x]/) != null && expr_array[i].match(/[\-\+]/) != null))
+					if((stack[stack.length-1].match(/[\:\x]/) !== null && expr_array[i].match(/[\:\x]/) !== null) || (stack[stack.length-1].match(/[\-\+]/) !== null && expr_array[i].match(/[\-\+]/) !== null) || (stack[stack.length-1].match(/[\:\x]/) !== null && expr_array[i].match(/[\-\+]/) !== null))
 					{
 						output_array.push(stack[stack.length-1]);
 						stack.pop();
@@ -89,7 +93,7 @@ function formatExpr(expr_array)
 			{
 				for(var s = 0; s <= stack.length; s++)
 				{
-					if(stack[stack.length-1].match(/\(/) != null)
+					if(stack[stack.length-1].match(/\(/) !== null)
 					{
 						stack.pop();
 						break;
@@ -114,32 +118,33 @@ function formatExpr(expr_array)
 
 function executeExpr(formatted_array)
 {
+	'use strict';
 	var resultString;
 	var result_array =[];
 	for(var i = 0; i < formatted_array.length; i++)
 	{
-		if(formatted_array[i].match(/\d+/) != null)
+		if(formatted_array[i].match(/\d+/) !== null)
 		{
 			result_array.push(parseInt(formatted_array[i]));
 		}
 		else
 		{
-			if(formatted_array[i].match(/\-/) != null)
+			if(formatted_array[i].match(/\-/) !== null)
 			{
 				result_array[result_array.length-2] = result_array[result_array.length-2]-result_array[result_array.length-1];
 				result_array.pop();
 			}
-			else if(formatted_array[i].match(/\+/) != null)
+			else if(formatted_array[i].match(/\+/) !== null)
 			{
 				result_array[result_array.length-2] = result_array[result_array.length-2]+result_array[result_array.length-1];
 				result_array.pop();
 			}
-			else if(formatted_array[i].match(/\x/) != null)
+			else if(formatted_array[i].match(/\x/) !== null)
 			{
 				result_array[result_array.length-2] = result_array[result_array.length-2]*result_array[result_array.length-1];
 				result_array.pop();
 			}
-			else if(formatted_array[i].match(/\:/) != null)
+			else if(formatted_array[i].match(/\:/) !== null)
 			{
 				result_array[result_array.length-2] = result_array[result_array.length-2]/result_array[result_array.length-1];
 				result_array.pop();
